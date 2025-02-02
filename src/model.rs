@@ -87,6 +87,7 @@ impl Llama<f32> {
             OP::matmul_transb(q, 0., &hidden_states, &self.params.wq[layer], 1.0);
             OP::matmul_transb(k, 0., &hidden_states, &self.params.wk[layer], 1.0);
             OP::matmul_transb(v, 0., &hidden_states, &self.params.wv[layer], 1.0);
+            let o_transposed = &self.params.wo[layer]; // (seq, n_q_h * dqkv)
             OP::rope(
                 q.reshape(&vec![seq_len, self.n_q_h, self.dqkv]),
                 past_seq_len,
@@ -147,6 +148,7 @@ fn self_attention(
     q: &Tensor<f32>,                 // (seq, n_kv_h * n_groups * dqkv)
     k: &Tensor<f32>,                 // (total_seq, n_kv_h * dqkv)
     v: &Tensor<f32>,                 // (total_seq, n_kv_h * dqkv)
+    o_transposed: &Tensor<f32>,      // (seq, n_groups * n_kv_h * dqkv)
     n_kv_h: usize,
     n_groups: usize,
     seq_len: usize,
