@@ -146,10 +146,11 @@ K = RoPE(x @ K_weight.T)
 V = x @ V_weight.T
 K = cat(K_cache, K)
 V = cat(V_cache, V)
-### 以下是你需要实现的部分
+### 以下是你需要在函数self_attention中实现的部分
 score = Q @ K.T / sqrt(dim)
 attn = masked_softmax(score)
 attn_V = attn @ V
+### 以下是你需要在"down_proj matmul and add residual"处实现的部分
 out = attn_V @ O_weight.T
 residual = out + residual
 ```
